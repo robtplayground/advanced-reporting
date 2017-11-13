@@ -1,0 +1,41 @@
+{
+  "name": "robt-portfolio",
+  "description": "RobT Portfolio 2017",
+  "main": "server.js",
+  "scripts": {
+    "start": "npm-run-all -p server watch:css watch:sync",
+    "css": "node bin/scss.js",
+    "uglify": "uglifyjs js/app.js --compress --mangle -o ./js/app.min.js",
+    "watch:css": "onchange \"scss/*.scss\" -- npm run css",
+    "server": "node server.js",
+    "watch:sync": "browser-sync start --port \"4000\" --ui-port \"4001\"  --proxy \"127.0.0.1:5000\"  --files \"css/*.css, views/**/*.html.ejs, js/*.js\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/"
+  },
+  "author": "Rob T",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/"
+  },
+  "homepage": "https://github.com/#readme",
+  "dependencies": {
+    "ejs": "^1.0.0",
+    "express": "^4.6.1"
+  },
+  "devDependencies": {
+    "glob": "^7.1.0",
+    "browser-sync": "^2.14.0",
+    "clean-css": "^3.4.19",
+    "jquery": "^2.2.0",
+    "node-sass": "^3.8.0",
+    "nodemon": "^1.8.1",
+    "npm-run-all": "^2.1.1",
+    "onchange": "^2.5.0",
+    "postcss": "^5.2",
+    "postcss-cli": "^2.6.0",
+    "uglify-js": "^2.7.4",
+    "autoprefixer": "^6.7.3"
+  }
+}
