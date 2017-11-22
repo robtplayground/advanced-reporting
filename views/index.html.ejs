@@ -3,7 +3,25 @@
     <!-- *** MASTHEAD *** -->
 
   <div>
-    <h1>Hello World!</h1>
+    <h1>Mercedes-Benz NGCC/GLA Campaign</h1>
+    <h2>The first 8 hours...</h2>
+
+    <div id="map"></div>
+
+    <!-- <form oninput="output.value = Math.round(range.valueAsNumber)"> -->
+    <form oninput="updateMarkers(Math.round(range.valueAsNumber))">
+    <div class="range">
+      <input name="range" type="range"
+value="0" min="0">
+      <div class="range-output">
+        <output class="output" name="rangeOutput" for="range">
+          0
+        </output>
+      </div>
+    </div>
+  </form>
+
+
   </div>
 
 

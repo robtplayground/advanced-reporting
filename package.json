@@ -8,7 +8,7 @@
     "uglify": "uglifyjs js/app.js --compress --mangle -o ./js/app.min.js",
     "watch:css": "onchange \"scss/*.scss\" -- npm run css",
     "server": "node server.js",
-    "watch:sync": "browser-sync start --port \"4000\" --ui-port \"4001\"  --proxy \"127.0.0.1:5000\"  --files \"css/*.css, views/**/*.html.ejs, js/*.js\""
+    "watch:sync": "browser-sync start --port \"4000\" --ui-port \"4001\"  --proxy \"127.0.0.1:5000\"  --files --https \"css/*.css, views/**/*.html.ejs, js/*.js\""
   },
   "repository": {
     "type": "git",
