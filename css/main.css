@@ -378,6 +378,9 @@ html, body {
   margin: 0;
   padding: 0; }
 
+html {
+  font-size: 16px; }
+
 #map {
   position: relative;
   width: 800px;
@@ -556,29 +559,58 @@ form {
 
 body {
   font-family: Helvetica Neue, Helvetica, Arial;
-  font-weight: 300; }
-
-main {
+  font-weight: 300;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
-  height: 100vh;
-  -webkit-box-pack: center;
-      -ms-flex-pack: center;
-          justify-content: center;
-  -webkit-box-align: center;
-      -ms-flex-align: center;
-          align-items: center;
-  color: #333; }
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+  min-height: 100%;
+  height: auto; }
 
 form {
   width: 80%;
   margin: 0 auto; }
 
-h1 {
-  text-align: center; }
+.charts {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex; }
 
-h2 {
-  font-weight: 300;
-  text-align: center;
-  margin-bottom: 30px; }
+.chart {
+  border: 1px solid black;
+  width: calc(50% - 1rem);
+  margin: 0 0.5rem;
+  height: 50vw;
+  -webkit-box-pack: space-evenly;
+      -ms-flex-pack: space-evenly;
+          justify-content: space-evenly; }
+
+.navbar {
+  height: 3rem;
+  background: #e91e63;
+  color: white; }
+  .navbar button {
+    width: 3rem;
+    height: 3rem;
+    background: transparent;
+    border: 0; }
+  .navbar use {
+    fill: white; }
+
+.filters {
+  position: absolute;
+  width: 20rem;
+  height: 100%;
+  z-index: 10;
+  background: white;
+  padding: 0.5rem; }
+  .filters h2, .filters h3 {
+    text-align: left; }
+
+.checkbox-group {
+  margin: 1rem 0; }

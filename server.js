@@ -14,6 +14,10 @@ app.get('/', function(request, response) {
   response.render('../views/index.html.ejs');
 });
 
+app.get('/location', function(request, response) {
+  response.render('../views/location.html.ejs');
+});
+
 app.listen(app.get('port'), function() {
   console.log('Node app is running on port', app.get('port'));
 });

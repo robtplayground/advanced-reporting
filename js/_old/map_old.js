@@ -1,4 +1,4 @@
-var API_KEY = 'AIzaSyAkaBFESkhK3w_hwoprEYDTmy2hmRfm4aA';
+var API_KEY = 'AIzaSyCGoVtWCBoXY3ByQFGTs2BqOX666RVODAg';
 
 var keen_query = "https://api.keen.io/3.0/projects/5832749c8db53dfda8a78daf/queries/count?api_key=AED5F59B6DC24F628B9397FA6141D98598ADA28EEEBBA0798A5F992878751614F0C3E7965A8C696B0BF6528D6756846D4FC8216C9EF48195873E07FC6B74632A19BF976CE11AA2F28B7E4EEA3388C2B8AB2636E0F5D51E734075D0E03966DD0B&event_collection=impression&group_by=%5B%22dimension.geo.coordinates%22%2C%22dimension.timestamp.Australia%2FSydney%22%5D&timezone=Australia%2FSydney&timeframe=%7B%22start%22%3A%222017-06-06T00%3A00%3A00.000%22%2C%22end%22%3A%222017-06-07T00%3A00%3A00.000%22%7D&filters=%5B%7B%22property_name%22%3A%22dimension.entity.campaign%22%2C%22operator%22%3A%22eq%22%2C%22property_value%22%3A%2257cbeb94fc81f71ac4bd20dc5eccb0ac%22%7D%5D";
 
