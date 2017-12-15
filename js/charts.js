@@ -2,9 +2,9 @@ var API_KEY = "AIzaSyCGoVtWCBoXY3ByQFGTs2BqOX666RVODAg";
 var SHEET_ID = "1rv9ijknqTMF7OCLMxOL3yQKKaxaUGDCEp0qf4FauW00";
 var chartData;
 
-function convertSerialDate(serial){ // https://gist.github.com/christopherscott/2782634
-  return new Date((serial - (25567 + 1))*86400*1000);
-}
+var startDate = new Date(2017, 10, 8, 11, 0);
+var endDate = new Date(2017, 10, 29, 11, 0);
+var dates = getDateArray(startDate, endDate);
 
 // Load chart packages (will execute when charts/loader.js is loaded)
 google.charts.load('current', {
@@ -17,9 +17,12 @@ google.charts.setOnLoadCallback(function() {
   // get chart data
   var DATA_FIELDS = "Data!A1:O20";
   $.get('https://sheets.googleapis.com/v4/spreadsheets/' + SHEET_ID + '/values/' + DATA_FIELDS + '?valueRenderOption=UNFORMATTED_VALUE&key=' + API_KEY, function(data) {
-    chartData = data.values;
-    // remove header rows
-    chartData.splice(0, 1);
+    chartData = convertSheetData(data);
+    // convert dates to jsDates
+    chartData.forEach(function(row, index){
+      var jsDate = convertSerialDate(row["Date"]);
+      chartData[index]["Date"] = jsDate;
+    });
 
     drawChartPie();
     drawChartLine();
@@ -29,7 +32,6 @@ google.charts.setOnLoadCallback(function() {
 });
 
 function drawChartPie() {
-
 
     // get viewability average + remainder
     var viewability = 0;
@@ -130,25 +132,46 @@ function drawChartTree() {
       fontColor: 'black',
       showScale: false
     });
-
   });
-
 }
 
 function drawChartLine(){
+  // benchmarking
   var booked = 1000000;
+  var expectedDaily = booked / dates.length;
+
+  // generate blank data
   var data = [
     ['Date', 'Impressions', 'Expected']
   ];
-  var progress = 0;
-  // var expected = 0;
-  chartData.forEach(function(row, index){
-    var date = convertSerialDate(row[0]);
-    var amount = progress+=row[2];
-    var bench = index * (booked / chartData.length-1);
-    var entry = [date, amount, bench];
+  for(var i = 1; i < dates.length; i++){
+    var entry = [dates[i], 0, i * expectedDaily];
     data.push(entry);
+  }
+  // console.log(JSON.stringify(chartData));
+  console.log(JSON.stringify(data));
+
+  // map data to blank
+  var expectedImps = 0;
+  data.forEach(function(row, index){
+    // first row of data is headers, so ignore this row
+    if(typeof row[0] === 'object'){
+      var dateMatch = chartData.find(function(entry){
+        // find and return chartData row where date matches
+        return entry["Date"].getTime() == row[0].getTime();
+      });
+
+      if(typeof dateMatch !== 'undefined'){
+        expectedImps+=dateMatch["Delivered Impressions"]
+      }
+      data[index][1] = expectedImps;
+    }    
   });
+
+  console.log(data);
+
+
+
   data = google.visualization.arrayToDataTable(data);
 
   var chart = new google.visualization.LineChart(document.getElementById('line1'));
@@ -157,7 +180,14 @@ function drawChartLine(){
     curveType: 'function',
     legend: { position: 'bottom' },
     hAxis: {
-      format: 'd/MM'
+      format: 'd/MM',
+      viewWindow: {
+        min: startDate,
+        max: endDate
+      }
+    },
+    explorer: {
+      actions: ['dragToZoom', 'rightClickToReset']
     }
   });
 }
