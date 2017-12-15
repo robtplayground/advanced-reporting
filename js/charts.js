@@ -1,12 +1,15 @@
 var API_KEY = "AIzaSyCGoVtWCBoXY3ByQFGTs2BqOX666RVODAg";
 var SHEET_ID = "1rv9ijknqTMF7OCLMxOL3yQKKaxaUGDCEp0qf4FauW00";
 var chartData;
+var benchData;
 
 // campaign info - could be moved into an object
 var startDate = new Date(2017, 10, 8, 11, 0);
 var endDate = new Date(2017, 10, 29, 11, 0);
 var booked = 1000000;
 var dates = getDateArray(startDate, endDate);
+
+var dataReady = false, benchReady = false;
 
 // Load chart packages (will execute when charts/loader.js is loaded)
 google.charts.load('current', {
@@ -25,13 +28,29 @@ google.charts.setOnLoadCallback(function() {
       var jsDate = convertSerialDate(row["Date"]);
       chartData[index]["Date"] = jsDate;
     });
+    dataReady = true;
+    if(dataReady === true && benchReady === true){
+      drawCharts();
+    }
+  });
 
-    drawViewability();
-    drawProgress();
-    drawDelivery();
-    // drawChartTree();
+  var BENCH_FIELDS = "Benchmarks!A1:F7";
+  $.get('https://sheets.googleapis.com/v4/spreadsheets/' + SHEET_ID + '/values/' + BENCH_FIELDS + '?valueRenderOption=UNFORMATTED_VALUE&key=' + API_KEY, function(data) {
+    benchData = convertSheetData(data);
+    // convert dates to jsDates
+    benchReady = true;
+    if(dataReady === true && benchReady === true){
+      drawCharts();
+    }
   });
 });
+
+function drawCharts(){
+  drawViewability();
+  drawProgress();
+  drawDelivery();
+  // drawChartTree();
+}
 
 function drawProgress(){
   // benchmarking
@@ -105,12 +124,26 @@ function drawDelivery() {
     var chart = new google.visualization.PieChart(document.getElementById('chart--DEL'));
     chart.draw(data, {
       colors: [$ssBlue, $palegrey],
-      pieHole: 0.5,
+      pieHole: 0.6,
       pieSliceTextStyle: {
         color: 'black',
       },
-      legend: 'none'
+      legend: 'none',
+      slices:{
+        1: {enableInteractivity: false, tooltip: false}
+      }
     });
+
+    // create benchmark overlay
+    var bmOverlay = $('<div id="charts--DEL--BM" class="chart chart--bm"></div>');
+    $('#chart--DEL').closest('.chart-wrapper').append(bmOverlay);
+
+    var benchData = new google.visualization.arrayToDataTable([
+      ['Metric', 'Delivery'],
+      ['Delivered', delivery],
+      ['', remainder]
+    ]);
+
 }
 
 function drawViewability() {
@@ -133,7 +166,7 @@ function drawViewability() {
 
     var chart = new google.visualization.PieChart(document.getElementById('chart--VB'));
     chart.draw(data, {
-      pieHole: 0.5,
+      pieHole: 0.6,
       colors: [$ssBlue, $palegrey],
       pieSliceTextStyle: {
         color: 'black',
