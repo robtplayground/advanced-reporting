@@ -25,6 +25,7 @@ function getDateArray(start, end) {
     return arr;
 }
 
-function convertSerialDate(serial){ // https://gist.github.com/christopherscott/2782634
+function convertSerialDate(serial){
+  // https://gist.github.com/christopherscott/2782634
   return new Date((serial - (25567 + 1))*86400*1000);
 }

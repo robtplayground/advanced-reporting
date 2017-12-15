@@ -47,12 +47,24 @@ form {
   display:flex;
 }
 
+.chart-wrapper{
+  position: relative;
+  height: 40rem;
+  h2{
+    position: relative;
+    text-align: center;
+    text-transform: uppercase;
+    font-size: 1.5rem;
+    z-index: 100;
+  }
+}
+
 .chart{
-  border: 1px solid black;
-  width: calc(50% - 1rem);
-  margin: 0 0.5rem;
-  height: 50vw;
-  justify-content: space-evenly;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top:0;
+  left:0;
 }
 
 .navbar{
@@ -84,4 +96,10 @@ form {
 
 .checkbox-group{
   margin: 1rem 0;
+}
+
+// google charts tooltip flicker bugfix
+
+svg[aria-label="A chart."] > g > g:last-child {
+  pointer-events: none
 }

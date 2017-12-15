@@ -32,7 +32,7 @@
 
 
 <div class="mdl-grid">
-  <div class="mdl-cell mdl-cell--6-col row">
+  <div class="mdl-cell mdl-cell--6-col row chart-wrapper">
     <div id="map"></div>
     <form oninput="updateMarkers(Math.round(range.valueAsNumber))">
     <div class="range">
@@ -45,8 +45,26 @@
     </div>
   </form>
   </div>
-  <div id="line1" class="mdl-cell mdl-cell--6-col"></div>
-  <div id="pie1" class="mdl-cell mdl-cell--6-col"></div>
+  <div class="mdl-cell mdl-cell--6-col chart-wrapper">
+    <h2>Progress</h2>
+    <div id="chart--PROG" class="chart"></div>
+  </div>
+  <div class="mdl-cell mdl-cell--3-col chart-wrapper">
+    <h2>Delivery</h2>
+    <div id="chart--DEL" class="chart"></div>
+  </div>
+  <div class="mdl-cell mdl-cell--3-col chart-wrapper">
+    <h2>Viewability</h2>
+    <div id="chart--VB" class="chart"></div>
+  </div>
+  <div class="mdl-cell mdl-cell--3-col chart-wrapper">
+    <h2>Time in View</h2>
+    <div id="pie3" class="chart"></div>
+  </div>
+  <div class="mdl-cell mdl-cell--3-col chart-wrapper">
+    <h2>Completions (Passive)</h2>
+    <div id="heat1" class="chart"></div>
+  </div>
 </div>
 
     </div>
