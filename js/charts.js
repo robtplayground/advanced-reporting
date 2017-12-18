@@ -1,15 +1,24 @@
+// ***** CAMPAIGN INFORMATION
+
+
+var startDate = new Date(2017, 10, 8, 11, 0);
+var endDate = new Date(2017, 10, 29, 11, 0);
+var duration = moment(endDate).diff(startDate, 'days');
+
+var booked = 1000000;
+var dates = getDateArray(startDate, endDate);
+
+var currentDate = new Date(2017, 10, 22, 11, 0);
+var currentDuration = moment(currentDate).diff(startDate, 'days');
+
 var API_KEY = "AIzaSyCGoVtWCBoXY3ByQFGTs2BqOX666RVODAg";
 var SHEET_ID = "1rv9ijknqTMF7OCLMxOL3yQKKaxaUGDCEp0qf4FauW00";
 var chartData;
 var benchData;
-
-// campaign info - could be moved into an object
-var startDate = new Date(2017, 10, 8, 11, 0);
-var endDate = new Date(2017, 10, 29, 11, 0);
-var booked = 1000000;
-var dates = getDateArray(startDate, endDate);
-
 var dataReady = false, benchReady = false;
+
+
+// ***** FETCH REQUIRED DATA
 
 // Load chart packages (will execute when charts/loader.js is loaded)
 google.charts.load('current', {
@@ -37,7 +46,6 @@ google.charts.setOnLoadCallback(function() {
   var BENCH_FIELDS = "Benchmarks!A1:F7";
   $.get('https://sheets.googleapis.com/v4/spreadsheets/' + SHEET_ID + '/values/' + BENCH_FIELDS + '?valueRenderOption=UNFORMATTED_VALUE&key=' + API_KEY, function(data) {
     benchData = convertSheetData(data);
-    // convert dates to jsDates
     benchReady = true;
     if(dataReady === true && benchReady === true){
       drawCharts();
@@ -45,11 +53,128 @@ google.charts.setOnLoadCallback(function() {
   });
 });
 
+// ***** PROCESS DATA - TOTALS
+
+function isValidDate(date){
+  return date.getTime() < currentDate.getTime();
+}
+
+function getDEL(){
+  var delivery = 0;
+  chartData.forEach(function(entry, index){
+    // will only add values for length of current duration
+    if(isValidDate(entry["Date"])){
+      delivery+=entry["Delivered Impressions"];
+    }
+  });
+  return (delivery / booked * 100);
+}
+
+function getDEL_bm(){
+  return Math.round((booked / duration * currentDuration) / booked * 100)
+}
+
+function getVB(){
+  // get viewability average
+  var viewability = 0;
+  chartData.forEach(function(entry){
+    if(isValidDate(entry["Date"])){
+      viewability+=entry["Viewability"];
+    }
+  });
+  return (viewability / chartData.length * 100);
+}
+
+function getVB_bm(){
+  var bm = benchData.find(function(row){
+    return row["Format"] === "superSkin";
+  });
+  return bm["Viewability"] * 100;
+}
+
+function getTIV(){
+  // get TIV average
+}
+
 function drawCharts(){
-  drawViewability();
-  drawProgress();
-  drawDelivery();
+
+ // delivery Pie Chart
+  drawPie({
+    metric: 'Delivery',
+    container: 'chart--DEL',
+    value: getDEL(),
+    unit: '',
+    benchmark: getDEL_bm()
+  });
+
+  drawPie({
+    metric: 'Viewability',
+    container: 'chart--VB',
+    value: getVB(),
+    unit: '%',
+    benchmark: getVB_bm()
+  });
+
+  // drawProgress();
   // drawChartTree();
+}
+
+
+
+function drawPie(params) {
+    // get viewability average + remainder
+    $chart = $('#' + params.container);
+
+    // Viewability Pie
+    var data = new google.visualization.arrayToDataTable([
+      ['Metric', 'Value'],
+      [params.metric, params.value],
+      ['', 100 - params.value]
+    ]);
+
+    var chart = new google.visualization.PieChart(document.getElementById(params.container));
+    chart.draw(data, {
+      backgroundColor: 'transparent',
+      colors: [$ssBlue, $palegrey],
+      pieHole: 0.6,
+      pieSliceTextStyle: {
+        color: 'transparent',
+      },
+      legend: 'none',
+      slices:{
+        1: {enableInteractivity: false, tooltip: false}
+      }
+    });
+
+    var bmData = new google.visualization.arrayToDataTable([
+      ['Benchmark', 'Value'],
+      ['', params.benchmark],
+      ['', 2],
+      ['', 100 - params.benchmark - 2]
+    ]);
+
+    console.log(bmData);
+
+    // chart Overlay
+    $chart.closest('.chart-wrapper').append('<div id="' + params.container + '--BM" class="chart chart--bm">' +  + '</div>');
+
+    var bmChart = new google.visualization.PieChart(document.getElementById(params.container + '--BM'));
+    bmChart.draw(bmData, {
+      backgroundColor: 'transparent',
+      colors: ['transparent', $pink, 'transparent'],
+      pieHole: 0.3,
+      pieSliceTextStyle: {
+        color: 'transparent',
+      },
+      legend: 'none',
+    });
+
+    // value number
+    $chart.closest('.chart-wrapper').append('<div class="chart--pie__value">' + params.value.toFixed(1) + '</span><span class="value__unit">%</span></div>');
+
+    // benchMark Value
+    $chart.closest('.chart-wrapper').append('<div class="chart--pie__bm"><span class="bm__desc">Expected: </span><span class="bm__value">' + params.benchmark + '</span></div>');
+
 }
 
 function drawProgress(){
@@ -100,77 +225,4 @@ function drawProgress(){
       actions: ['dragToZoom', 'rightClickToReset']
     }
   });
-}
-
-function drawDelivery() {
-    // get viewability average + remainder
-    var delivery = 0;
-    var remainder = 0;
-    chartData.forEach(function(entry){
-      delivery+=entry["Delivered Impressions"];
-    });
-    delivery = delivery / booked * 100;
-    console.log('DELIVERY', delivery);
-    remainder = 100 - delivery;
-    // done
-
-    // Viewability Pie
-    var data = new google.visualization.arrayToDataTable([
-      ['Metric', 'Delivery'],
-      ['Delivered', delivery],
-      ['', remainder]
-    ]);
-
-    var chart = new google.visualization.PieChart(document.getElementById('chart--DEL'));
-    chart.draw(data, {
-      colors: [$ssBlue, $palegrey],
-      pieHole: 0.6,
-      pieSliceTextStyle: {
-        color: 'black',
-      },
-      legend: 'none',
-      slices:{
-        1: {enableInteractivity: false, tooltip: false}
-      }
-    });
-
-    // create benchmark overlay
-    var bmOverlay = $('<div id="charts--DEL--BM" class="chart chart--bm"></div>');
-    $('#chart--DEL').closest('.chart-wrapper').append(bmOverlay);
-
-    var benchData = new google.visualization.arrayToDataTable([
-      ['Metric', 'Delivery'],
-      ['Delivered', delivery],
-      ['', remainder]
-    ]);
-
-}
-
-function drawViewability() {
-    // get viewability average + remainder
-    var viewability = 0;
-    var remainder = 0;
-    chartData.forEach(function(entry){
-      viewability+=entry["Viewability"];
-    });
-    viewability = viewability / chartData.length * 100;
-    remainder = 100 - viewability;
-    // done
-
-    // Viewability Pie
-    var data = new google.visualization.arrayToDataTable([
-      ['Metric', 'Viewability'],
-      ['Viewability', viewability],
-      ['', remainder]
-    ]);
-
-    var chart = new google.visualization.PieChart(document.getElementById('chart--VB'));
-    chart.draw(data, {
-      pieHole: 0.6,
-      colors: [$ssBlue, $palegrey],
-      pieSliceTextStyle: {
-        color: 'black',
-      },
-      legend: 'none'
-    });
 }

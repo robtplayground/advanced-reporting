@@ -43,7 +43,7 @@ function getData(){
     $('.range input').attr('max', locations.length);
     new RangeInput(document.querySelector('.range'));
 
-    initMap(locations);
+    // initMap(locations);
   });
 }
 
