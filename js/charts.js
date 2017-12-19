@@ -110,7 +110,7 @@ function getTIV(){
   var tiv = 0;
   chartData.forEach(function(entry){
     if(isValidDate(entry["Date"])){
-      // console.log(entry["Average Time In View"]);
+
       tiv+=entry["Average Time In View"];
     }
   });
@@ -131,7 +131,7 @@ function getCompletionsP(){
     '75': 0,
     '100': 0,
   };
-  console.log(chartData);
+
   chartData.forEach(function(entry){
     if(isValidDate(entry["Date"])){
       // total each
@@ -152,7 +152,7 @@ function getCompletionsP_bm(){
   var bm = benchData.find(function(row){
     return row["Format"] === "hangTime";
   });
-  return bm["Average Time In View"];
+  return bm["Video Completion Rate"];
 }
 
 function drawCharts(){
@@ -184,14 +184,14 @@ function drawCharts(){
     benchmark: getTIV_bm()
   });
 
-  console.log(getCompletionsP());
 
-  // var chart_VID = drawHeat({
-  //   metric: 'Completions (Passive)',
-  //   container: 'chart_VID',
-  //   values: getCompletionsP(),
-  //   benchmark: getCompletionsP_bm()
-  // });
+
+  var chart_CP = drawHeat({
+    metric: 'Completions (Passive)',
+    container: 'chart_CP',
+    values: getCompletionsP(),
+    benchmark: getCompletionsP_bm()
+  });
 
   // drawProgress();
   // drawChartTree();
@@ -201,14 +201,12 @@ function drawCharts(){
 
 function drawPie(params) {
 
-    // get viewability average + remainder
     $chart = $('#' + params.container);
-    var keyColor = $ssBlue;
 
     function getRemainder(unit, value){
       if(unit === 's'){
         var round10 = Math.ceil(value / 10) * 10;
-        console.log(round10);
+
         return round10 - value;
       }
       if(unit === '%'){
@@ -328,10 +326,58 @@ function drawProgress(){
 }
 
 
-
-
-
-
 function drawHeat(params) {
+  $chart = $('#' + params.container);
 
+  var hotColor = hexToRgb($pink);
+  var coolColor = hexToRgb($midgrey);
+
+  // bunch of functions for getting heatmap colors from gradient - converting from hex to rgb and back again
+
+  var heatColors = [];
+
+  var allValues = [params.values['25'], params.values['50'], params.values['75'], params.values['100']];
+
+  var highest = Math.max.apply(null, allValues);
+  var lowest = Math.min.apply(null, allValues);
+
+  allValues.forEach(function(value) {
+    var colorPos = (value - lowest) / (highest - lowest);
+    var color = 'rgb(' + pickHex(hotColor, coolColor, colorPos) + ')';
+    color = rgbVals(color);
+    color = rgbToHex(color[0], color[1], color[2]);
+    // finally got my new hex value
+    heatColors.push(color);
+  });
+
+  var data = new google.visualization.DataTable();
+  data.addColumn('string', 'Benchmark');
+  data.addColumn('number', 'Value');
+  data.addColumn('string', 'annotation'); // not working yet
+  data.addRows([
+    ['25%', 25, params.values['25'] + '%'],
+    ['50%', 25, params.values['50'] + '%'],
+    ['75%', 25, params.values['75'] + '%'],
+    ['100%', 25, params.values['100'] + '%']
+  ]);
+
+  console.log(data);
+
+
+  //
+  // function heatColor(value){
+  //
+  // }
+  var chart = new google.visualization.PieChart(document.getElementById(params.container));
+  chart.draw(data, {
+    backgroundColor: 'transparent',
+    colors: heatColors,
+    pieHole: 0.6,
+    pieSliceTextStyle: {
+      // color: 'transparent',
+    },
+    legend: 'none',
+    // enableInteractivity: false,
+    tooltip: false
+  });
 }

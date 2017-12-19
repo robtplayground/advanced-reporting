@@ -4,7 +4,7 @@ var $white = "#ffffff";
 var $palegrey = "#fafafa";
 
 var $lightgrey = "#efefef";
-var $midgrey = " #aaaaaa";
+var $midgrey = "#aaaaaa";
 var $darkgrey = "#333333";
 
 // brand colours
