@@ -376,7 +376,7 @@ function drawHeat(params) {
     pieSliceTextStyle: {
       // color: 'transparent',
     },
-    legend: 'none',
+    legend: {position: 'labeled'},
     // enableInteractivity: false,
     tooltip: false
   });
