@@ -587,7 +587,7 @@ form {
 
 .chart-wrapper {
   position: relative;
-  height: 40rem; }
+  height: 20rem; }
 
 .chart--pie {
   display: -webkit-box;
@@ -621,8 +621,9 @@ form {
   bottom: 0; }
 
 .chart--bm {
-  pointer-events: none;
   z-index: 20; }
+  .chart--bm svg g:not(:last-child) {
+    mix-blend-mode: darken; }
 
 .chart {
   position: absolute;

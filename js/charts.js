@@ -29,7 +29,7 @@ google.charts.load('current', {
 google.charts.setOnLoadCallback(function() {
 
   // get chart data
-  var DATA_FIELDS = "Data!A1:O20";
+  var DATA_FIELDS = "Data!A1:P20";
   $.get('https://sheets.googleapis.com/v4/spreadsheets/' + SHEET_ID + '/values/' + DATA_FIELDS + '?valueRenderOption=UNFORMATTED_VALUE&key=' + API_KEY, function(data) {
     chartData = convertSheetData(data);
     // convert dates to jsDates
@@ -59,15 +59,28 @@ function isValidDate(date){
   return date.getTime() < currentDate.getTime();
 }
 
+// to be used later
+var delivered = 0;
+var viewable = 0;
+
 function getDEL(){
-  var delivery = 0;
   chartData.forEach(function(entry, index){
     // will only add values for length of current duration
     if(isValidDate(entry["Date"])){
-      delivery+=entry["Delivered Impressions"];
+      delivered+=entry["Delivered Impressions"];
     }
   });
-  return (delivery / booked * 100);
+  return (delivered / booked * 100);
+}
+
+function getVIEWABLE(){
+  chartData.forEach(function(entry, index){
+    // will only add values for length of current duration
+    if(isValidDate(entry["Date"])){
+      viewable+=entry["Viewable Impressions"];
+    }
+  });
+  return viewable;
 }
 
 function getDEL_bm(){
@@ -87,33 +100,98 @@ function getVB(){
 
 function getVB_bm(){
   var bm = benchData.find(function(row){
-    return row["Format"] === "superSkin";
+    return row["Format"] === "hangTime";
   });
   return bm["Viewability"] * 100;
 }
 
 function getTIV(){
   // get TIV average
+  var tiv = 0;
+  chartData.forEach(function(entry){
+    if(isValidDate(entry["Date"])){
+      // console.log(entry["Average Time In View"]);
+      tiv+=entry["Average Time In View"];
+    }
+  });
+  return (tiv / chartData.length);
+}
+
+function getTIV_bm(){
+  var bm = benchData.find(function(row){
+    return row["Format"] === "hangTime";
+  });
+  return bm["Average Time In View"];
+}
+
+function getCompletionsP(){
+  var values = {
+    '25': 0,
+    '50': 0,
+    '75': 0,
+    '100': 0,
+  };
+  console.log(chartData);
+  chartData.forEach(function(entry){
+    if(isValidDate(entry["Date"])){
+      // total each
+      values['25']+= entry["HangTime - Video First Quarter Views"];
+      values['50']+= entry["HangTime - Video Second Quarter Views"];
+      values['75']+= entry["HangTime - Video Third Quarter Views"];
+      values['100']+= entry["HangTime - Video Completions"];
+    }
+  });
+  values['25'] = Number((values['25'] / viewable * 100).toFixed(1));
+  values['50'] = Number((values['50'] / viewable * 100).toFixed(1));
+  values['75'] = Number((values['75'] / viewable * 100).toFixed(1));
+  values['100'] = Number((values['100'] / viewable * 100).toFixed(1));
+  return values;
+}
+
+function getCompletionsP_bm(){
+  var bm = benchData.find(function(row){
+    return row["Format"] === "hangTime";
+  });
+  return bm["Average Time In View"];
 }
 
 function drawCharts(){
 
- // delivery Pie Chart
-  drawPie({
+  viewable = getVIEWABLE();
+
+ // delivered Pie Chart
+  var chart_DEL = drawPie({
     metric: 'Delivery',
-    container: 'chart--DEL',
+    container: 'chart_DEL',
     value: getDEL(),
-    unit: '',
+    unit: '%',
     benchmark: getDEL_bm()
   });
 
-  drawPie({
+  var chart_VB = drawPie({
     metric: 'Viewability',
-    container: 'chart--VB',
+    container: 'chart_VB',
     value: getVB(),
     unit: '%',
     benchmark: getVB_bm()
   });
+
+  var chart_TIV = drawPie({
+    metric: 'Average Time in View',
+    container: 'chart_TIV',
+    value: getTIV(),
+    unit: 's',
+    benchmark: getTIV_bm()
+  });
+
+  console.log(getCompletionsP());
+
+  // var chart_VID = drawHeat({
+  //   metric: 'Completions (Passive)',
+  //   container: 'chart_VID',
+  //   values: getCompletionsP(),
+  //   benchmark: getCompletionsP_bm()
+  // });
 
   // drawProgress();
   // drawChartTree();
@@ -122,14 +200,28 @@ function drawCharts(){
 
 
 function drawPie(params) {
+
     // get viewability average + remainder
     $chart = $('#' + params.container);
+    var keyColor = $ssBlue;
+
+    function getRemainder(unit, value){
+      if(unit === 's'){
+        var round10 = Math.ceil(value / 10) * 10;
+        console.log(round10);
+        return round10 - value;
+      }
+      if(unit === '%'){
+        return 100 - value;
+      }
+    }
 
     // Viewability Pie
+
     var data = new google.visualization.arrayToDataTable([
       ['Metric', 'Value'],
       [params.metric, params.value],
-      ['', 100 - params.value]
+      ['', getRemainder(params.unit, params.value)]
     ]);
 
     var chart = new google.visualization.PieChart(document.getElementById(params.container));
@@ -141,39 +233,48 @@ function drawPie(params) {
         color: 'transparent',
       },
       legend: 'none',
-      slices:{
-        1: {enableInteractivity: false, tooltip: false}
-      }
+      enableInteractivity: false,
+      tooltip: false
     });
 
-    var bmData = new google.visualization.arrayToDataTable([
-      ['Benchmark', 'Value'],
-      ['', params.benchmark],
-      ['', 2],
-      ['', 100 - params.benchmark - 2]
-    ]);
-
-    console.log(bmData);
+    var bmData = new google.visualization.DataTable();
+        bmData.addColumn('string', 'Benchmark');
+        bmData.addColumn('number', 'Value');
+        bmData.addColumn({type: 'string', role: 'tooltip'});
+        bmData.addRows([
+          ['Benchmark', params.benchmark, ('Benchmark ' + params.benchmark + params.unit)],
+          ['', getRemainder(params.unit, params.benchmark), '']
+        ]);
 
     // chart Overlay
     $chart.closest('.chart-wrapper').append('<div id="' + params.container + '--BM" class="chart chart--bm">' +  + '</div>');
 
     var bmChart = new google.visualization.PieChart(document.getElementById(params.container + '--BM'));
-    bmChart.draw(bmData, {
+    var $bmChart = $('#' + params.container + '--BM');
+
+    var bmOptions = {
       backgroundColor: 'transparent',
-      colors: ['transparent', $pink, 'transparent'],
-      pieHole: 0.3,
+      colors: [$palepink, 'transparent'],
+      pieHole: 0.6,
       pieSliceTextStyle: {
         color: 'transparent',
       },
       legend: 'none',
-    });
+      tooltip:{
+        trigger:'selection'
+      }
+    };
 
     // value number
-    $chart.closest('.chart-wrapper').append('<div class="chart--pie__value">' + params.value.toFixed(1) + '</span><span class="value__unit">%</span></div>');
+    $chart.closest('.chart-wrapper').append('<div class="chart--pie__value">' + params.value.toFixed(1) + '</span><span class="value__unit">' + params.unit + '</span></div>');
 
-    // benchMark Value
-    $chart.closest('.chart-wrapper').append('<div class="chart--pie__bm"><span class="bm__desc">Expected: </span><span class="bm__value">' + params.benchmark + '</span></div>');
+    // trigger benchmark tooltip
+
+    google.visualization.events.addListener(bmChart, 'ready', function(e) {
+        bmChart.setSelection([{row:0,column:null}]);
+    });
+
+    bmChart.draw(bmData, bmOptions);
 
 }
 
@@ -206,10 +307,9 @@ function drawProgress(){
     }
   });
 
-
   data = google.visualization.arrayToDataTable(data);
 
-  var chart = new google.visualization.LineChart(document.getElementById('chart--PROG'));
+  var chart = new google.visualization.LineChart(document.getElementById('chart_PROG'));
   chart.draw(data,{
     title: 'Delivery Progress',
     curveType: 'function',
@@ -225,4 +325,13 @@ function drawProgress(){
       actions: ['dragToZoom', 'rightClickToReset']
     }
   });
+}
+
+
+
+
+
+
+function drawHeat(params) {
+
 }

@@ -49,7 +49,7 @@ form {
 
 .chart-wrapper{
   position: relative;
-  height: 40rem;
+  height: 20rem;
 
 }
 .chart--pie{
@@ -85,8 +85,12 @@ form {
 }
 
 .chart--bm{
-  pointer-events:none;
+  // pointer-events:none;
   z-index: 20;
+  // opacity: 0;
+  svg g:not(:last-child){
+    mix-blend-mode: darken;
+  }
 }
 
 .chart{
