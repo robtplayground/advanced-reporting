@@ -32,65 +32,78 @@
     <main class="mdl-layout__content">
       <div class="page-content">
 
-        <div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect"> <!-- tabs -->
+        <div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect">
+          <!-- tabs -->
 
           <div class="mdl-tabs__tab-bar">
             <a href="#delivery-panel" class="mdl-tabs__tab is-active">Delivery</a>
             <a href="#engagement-panel" class="mdl-tabs__tab">Engagement</a>
           </div>
 
-        <div class="mdl-tabs__panel is-active" id="delivery-panel">
-          <!-- Delivery Tab -->
-          <div class="mdl-grid">
-            <div class="mdl-cell mdl-cell--6-col row chart-wrapper">
-              <div id="map"></div>
-              <form oninput="updateMarkers(Math.round(range.valueAsNumber))">
-                <div class="range">
-                  <input name="range" type="range" value="0" min="0">
-                  <div class="range-output">
-                    <output class="output" name="rangeOutput" for="range">
-          0
-        </output>
+          <div class="mdl-tabs__panel is-active" id="delivery-panel">
+            <!-- Delivery Tab -->
+            <div class="mdl-grid">
+              <div class="mdl-cell mdl-cell--12-col row">
+                <p>Reach of campaign: 100,000</p>
+              </div>
+              <div class="mdl-cell mdl-cell--6-col row chart-wrapper">
+                <div id="map"></div>
+                <form oninput="updateMarkers(Math.round(range.valueAsNumber))">
+                  <div class="range">
+                    <input name="range" type="range" value="0" min="0">
+                    <div class="range-output">
+                      <output class="output" name="rangeOutput" for="range">0</output>
+                    </div>
                   </div>
+                </form>
+              </div>
+              <div class="mdl-cell mdl-cell--6-col chart-wrapper">
+                <h2>Progress</h2>
+                <div id="chart_PROG" class="chart"></div>
+              </div>
+              <div class="mdl-cell mdl-cell--3-col chart-wrapper chart--pie">
+                <h2>Delivery</h2>
+                <div id="chart_DEL" class="chart"></div>
+              </div>
+              <div class="mdl-cell mdl-cell--3-col chart-wrapper chart--pie">
+                <h2>Viewability</h2>
+                <div id="chart_VB" class="chart"></div>
+              </div>
+              <div class="mdl-cell mdl-cell--3-col chart-wrapper chart--pie">
+                <h2>Time in View</h2>
+                <div id="chart_TIV" class="chart"></div>
+              </div>
+              <div class="mdl-cell mdl-cell--3-col chart-wrapper chart--pie">
+                <h2>Completions (Passive)</h2>
+                <div id="chart_CP" class="chart"></div>
+                <div id="completions-overlay">
+                  <span id="text25">25%</span>
+                  <span id="text50">50%</span>
+                  <span id="text75">75%</span>
+                  <span id="text100">100%</span>
                 </div>
-              </form>
-            </div>
-            <div class="mdl-cell mdl-cell--6-col chart-wrapper">
-              <h2>Progress</h2>
-              <div id="chart_PROG" class="chart"></div>
-            </div>
-            <div class="mdl-cell mdl-cell--3-col chart-wrapper chart--pie">
-              <h2>Delivery</h2>
-              <div id="chart_DEL" class="chart"></div>
-            </div>
-            <div class="mdl-cell mdl-cell--3-col chart-wrapper chart--pie">
-              <h2>Viewability</h2>
-              <div id="chart_VB" class="chart"></div>
-            </div>
-            <div class="mdl-cell mdl-cell--3-col chart-wrapper chart--pie">
-              <h2>Time in View</h2>
-              <div id="chart_TIV" class="chart"></div>
-            </div>
-            <div class="mdl-cell mdl-cell--3-col chart-wrapper chart--pie">
-              <h2>Completions (Passive)</h2>
-              <div id="chart_CP" class="chart"></div>
-              <div id="completions-overlay">
-                <span id="text25">25%</span>
-                <span id="text50">50%</span>
-                <span id="text75">75%</span>
-                <span id="text100">100%</span>
               </div>
             </div>
+
           </div>
+          <!-- End Delivery Tab -->
 
-        </div> <!-- End Delivery Tab -->
+          <div class="mdl-tabs__panel" id="engagement-panel">
 
-        <div class="mdl-tabs__panel" id="engagement-panel"> <!-- End Delivery Tab -->
+            <div class="mdl-grid">
+              <div class="mdl-cell mdl-cell--6-col row chart-wrapper">
+                Hello
+              </div>
+              <div class="mdl-cell mdl-cell--6-col row chart-wrapper">
+                Goodbye
+              </div>
+            </div>
 
-          Hello Friends
 
+
+          </div>
         </div>
-      </div> <!-- end tabs -->
+        <!-- end tabs -->
 
       </div>
     </main>
