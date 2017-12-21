@@ -2,74 +2,99 @@
 
   <!-- The drawer is always open in large screens. The header is always shown,
   even in small screens. -->
-<div class="mdl-layout mdl-js-layout
-            mdl-layout--fixed-header"> <!-- removed mdl-layout--fixed-drawer -->
-  <header class="mdl-layout__header">
-    <div class="mdl-layout__header-row">
-      <span class="mdl-layout-title">Home</span>
-      <div class="mdl-layout-spacer"></div>
-      <div class="mdl-textfield mdl-js-textfield mdl-textfield--expandable
+  <div class="mdl-layout mdl-js-layout
+            mdl-layout--fixed-header">
+    <!-- removed mdl-layout--fixed-drawer -->
+    <header class="mdl-layout__header">
+      <div class="mdl-layout__header-row">
+        <span class="mdl-layout-title">Justice League Campaign</span>
+        <div class="mdl-layout-spacer"></div>
+        <div class="mdl-textfield mdl-js-textfield mdl-textfield--expandable
                   mdl-textfield--floating-label mdl-textfield--align-right">
-        <label class="mdl-button mdl-js-button mdl-button--icon"
+          <!-- <label class="mdl-button mdl-js-button mdl-button--icon"
                for="fixed-header-drawer-exp">
           <i class="material-icons">search</i>
-        </label>
-        <div class="mdl-textfield__expandable-holder">
-          <input class="mdl-textfield__input" type="text" name="sample"
-                 id="fixed-header-drawer-exp">
+        </label> -->
+          <div class="mdl-textfield__expandable-holder">
+            <input class="mdl-textfield__input" type="text" name="sample" id="fixed-header-drawer-exp">
+          </div>
         </div>
       </div>
-    </div>
-  </header>
-  <!-- <div class="mdl-layout__drawer">
+    </header>
+
+
+    <!-- <div class="mdl-layout__drawer">
     <span class="mdl-layout-title">Title</span>
     <nav class="mdl-navigation">
       <div id="tree1" style="height: 20rem;"></div>
     </nav>
   </div> -->
-  <main class="mdl-layout__content">
-    <div class="page-content">
+    <main class="mdl-layout__content">
+      <div class="page-content">
 
+        <div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect"> <!-- tabs -->
 
-<div class="mdl-grid">
-  <!-- <div class="mdl-cell mdl-cell--6-col row chart-wrapper">
-    <div id="map"></div>
-    <form oninput="updateMarkers(Math.round(range.valueAsNumber))">
-    <div class="range">
-      <input name="range" type="range" value="0" min="0">
-      <div class="range-output">
-        <output class="output" name="rangeOutput" for="range">
+          <div class="mdl-tabs__tab-bar">
+            <a href="#delivery-panel" class="mdl-tabs__tab is-active">Delivery</a>
+            <a href="#engagement-panel" class="mdl-tabs__tab">Engagement</a>
+          </div>
+
+        <div class="mdl-tabs__panel is-active" id="delivery-panel">
+          <!-- Delivery Tab -->
+          <div class="mdl-grid">
+            <div class="mdl-cell mdl-cell--6-col row chart-wrapper">
+              <div id="map"></div>
+              <form oninput="updateMarkers(Math.round(range.valueAsNumber))">
+                <div class="range">
+                  <input name="range" type="range" value="0" min="0">
+                  <div class="range-output">
+                    <output class="output" name="rangeOutput" for="range">
           0
         </output>
+                  </div>
+                </div>
+              </form>
+            </div>
+            <div class="mdl-cell mdl-cell--6-col chart-wrapper">
+              <h2>Progress</h2>
+              <div id="chart_PROG" class="chart"></div>
+            </div>
+            <div class="mdl-cell mdl-cell--3-col chart-wrapper chart--pie">
+              <h2>Delivery</h2>
+              <div id="chart_DEL" class="chart"></div>
+            </div>
+            <div class="mdl-cell mdl-cell--3-col chart-wrapper chart--pie">
+              <h2>Viewability</h2>
+              <div id="chart_VB" class="chart"></div>
+            </div>
+            <div class="mdl-cell mdl-cell--3-col chart-wrapper chart--pie">
+              <h2>Time in View</h2>
+              <div id="chart_TIV" class="chart"></div>
+            </div>
+            <div class="mdl-cell mdl-cell--3-col chart-wrapper chart--pie">
+              <h2>Completions (Passive)</h2>
+              <div id="chart_CP" class="chart"></div>
+              <div id="completions-overlay">
+                <span id="text25">25%</span>
+                <span id="text50">50%</span>
+                <span id="text75">75%</span>
+                <span id="text100">100%</span>
+              </div>
+            </div>
+          </div>
+
+        </div> <!-- End Delivery Tab -->
+
+        <div class="mdl-tabs__panel" id="engagement-panel"> <!-- End Delivery Tab -->
+
+          Hello Friends
+
+        </div>
+      </div> <!-- end tabs -->
+
       </div>
-    </div>
-  </form>
-  </div> -->
-  <div class="mdl-cell mdl-cell--6-col chart-wrapper">
-    <h2>Progress</h2>
-    <div id="chart_PROG" class="chart"></div>
+    </main>
   </div>
-  <div class="mdl-cell mdl-cell--3-col chart-wrapper chart--pie">
-    <h2>Delivery</h2>
-    <div id="chart_DEL" class="chart"></div>
-  </div>
-  <div class="mdl-cell mdl-cell--3-col chart-wrapper chart--pie">
-    <h2>Viewability</h2>
-    <div id="chart_VB" class="chart"></div>
-  </div>
-  <div class="mdl-cell mdl-cell--3-col chart-wrapper chart--pie">
-    <h2>Time in View</h2>
-    <div id="chart_TIV" class="chart"></div>
-  </div>
-  <div class="mdl-cell mdl-cell--3-col chart-wrapper chart--pie">
-    <h2>Completions (Passive)</h2>
-    <div id="chart_CP" class="chart"></div>
-  </div>
-</div>
-
-    </div>
-  </main>
-</div>
 
 
-    <% include partials/footer.html.ejs %>
+  <% include partials/footer.html.ejs %>

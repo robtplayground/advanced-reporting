@@ -22,7 +22,7 @@ var dataReady = false, benchReady = false;
 
 // Load chart packages (will execute when charts/loader.js is loaded)
 google.charts.load('current', {
-  'packages': ['corechart', 'gauge', 'treemap']
+  'packages': ['corechart', 'gauge', 'treemap', 'table']
 });
 
 // Set a callback to run when the Google Visualization API is loaded.
@@ -193,7 +193,7 @@ function drawCharts(){
     benchmark: getCompletionsP_bm()
   });
 
-  // drawProgress();
+  drawProgress();
   // drawChartTree();
 }
 
@@ -351,32 +351,25 @@ function drawHeat(params) {
   });
 
   var data = new google.visualization.DataTable();
-  data.addColumn('string', 'Benchmark');
+  data.addColumn('string', 'label');
   data.addColumn('number', 'Value');
-  data.addColumn('string', 'annotation'); // not working yet
   data.addRows([
-    ['25%', 25, params.values['25'] + '%'],
-    ['50%', 25, params.values['50'] + '%'],
-    ['75%', 25, params.values['75'] + '%'],
-    ['100%', 25, params.values['100'] + '%']
+    [params.values['25'] + '%', 25],
+    [params.values['50'] + '%', 25],
+    [params.values['75'] + '%', 25],
+    [params.values['100'] + '%', 25]
   ]);
 
-  console.log(data);
-
-
-  //
-  // function heatColor(value){
-  //
-  // }
   var chart = new google.visualization.PieChart(document.getElementById(params.container));
   chart.draw(data, {
     backgroundColor: 'transparent',
     colors: heatColors,
     pieHole: 0.6,
+    pieSliceText: 'label',
     pieSliceTextStyle: {
-      // color: 'transparent',
+      // color: 'black',
     },
-    legend: {position: 'labeled'},
+    legend: 'none',
     // enableInteractivity: false,
     tooltip: false
   });

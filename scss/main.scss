@@ -7,10 +7,6 @@ html{
   font-size: 16px;
 }
 
-.row{
-  height: 30rem;
-}
-
 #map{
   position: relative;
   width: 100%;
@@ -49,7 +45,7 @@ form {
 
 .chart-wrapper{
   position: relative;
-  height: 20rem;
+  height: 25rem;
 
 }
 .chart--pie{
@@ -136,4 +132,42 @@ form {
 
 svg[aria-label="A chart."] > g > g:last-child {
   pointer-events: none
+}
+
+#completions-overlay{
+  position: absolute;
+  width: 50%;
+  left:25%;
+  height: 0;
+  padding-top:50%;
+  font-size: 1rem;
+  #text25{
+    display:block;
+    position: absolute;
+    top:0;
+    right:0;
+  }
+  #text50{
+    display:block;
+    position: absolute;
+    bottom:0;
+    right:0;
+  }
+  #text75{
+    display:block;
+    position: absolute;
+    bottom:0;
+    left:0;
+  }
+  #text100{
+    display:block;
+    position: absolute;
+    top:0;
+    left:0;
+  }
+}
+
+.mdl-tabs__tab-bar{
+  justify-content:flex-start;
+  padding-left: 40px;
 }

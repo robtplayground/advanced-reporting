@@ -382,9 +382,6 @@ html, body {
 html {
   font-size: 16px; }
 
-.row {
-  height: 30rem; }
-
 #map {
   position: relative;
   width: 100%;
@@ -587,7 +584,7 @@ form {
 
 .chart-wrapper {
   position: relative;
-  height: 20rem; }
+  height: 25rem; }
 
 .chart--pie {
   display: -webkit-box;
@@ -659,3 +656,37 @@ form {
 
 svg[aria-label="A chart."] > g > g:last-child {
   pointer-events: none; }
+
+#completions-overlay {
+  position: absolute;
+  width: 50%;
+  left: 25%;
+  height: 0;
+  padding-top: 50%;
+  font-size: 1rem; }
+  #completions-overlay #text25 {
+    display: block;
+    position: absolute;
+    top: 0;
+    right: 0; }
+  #completions-overlay #text50 {
+    display: block;
+    position: absolute;
+    bottom: 0;
+    right: 0; }
+  #completions-overlay #text75 {
+    display: block;
+    position: absolute;
+    bottom: 0;
+    left: 0; }
+  #completions-overlay #text100 {
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0; }
+
+.mdl-tabs__tab-bar {
+  -webkit-box-pack: start;
+      -ms-flex-pack: start;
+          justify-content: flex-start;
+  padding-left: 40px; }

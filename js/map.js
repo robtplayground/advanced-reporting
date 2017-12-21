@@ -1,5 +1,7 @@
 // Load the Google Maps Script (if #map exists)
 
+var API_KEY = "AIzaSyCb9UAcp30xpvoD9bFAmIEtbAn4uAfz1Vs";
+
 document.addEventListener('DOMContentLoaded', function () {
   if (document.querySelectorAll('#map').length > 0)
   {
@@ -12,6 +14,7 @@ document.addEventListener('DOMContentLoaded', function () {
     js_file.type = 'text/javascript';
     js_file.src = 'https://maps.googleapis.com/maps/api/js?callback=getData&key=' + API_KEY + '&language=' + lang;
     document.getElementsByTagName('head')[0].appendChild(js_file);
+    console.log('appending Google Maps script');
   }
 });
 
@@ -20,7 +23,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 var SHEET_ID = "1rv9ijknqTMF7OCLMxOL3yQKKaxaUGDCEp0qf4FauW00";
 var GEO_RANGE = "Geo!A1:C31694";
-var API_KEY = "AIzaSyCGoVtWCBoXY3ByQFGTs2BqOX666RVODAg";
+
 
 var locations = [];
 
@@ -38,12 +41,11 @@ function getData(){
       entry.lng = impression[2];
       locations.push(entry);
     });
-    // console.log(locations);
     // Range slider
     $('.range input').attr('max', locations.length);
     new RangeInput(document.querySelector('.range'));
 
-    // initMap(locations);
+    initMap(locations);
   });
 }
 
@@ -62,6 +64,7 @@ function initMap(){
     mapTypeControl: false,
     streetViewControl: false,
     zoomControl: true,
+    fullScreenControl: false,
     zoomControlOptions: {
       position: google.maps.ControlPosition.LEFT_BOTTOM
     },
