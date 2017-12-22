@@ -195,6 +195,8 @@ function drawCharts(){
 
   drawProgress();
   // drawChartTree();
+
+  drawEngagement();
 }
 
 
@@ -372,5 +374,66 @@ function drawHeat(params) {
     legend: 'none',
     // enableInteractivity: false,
     tooltip: false
+  });
+}
+
+
+
+
+function drawEngagement(){
+  // benchmarking
+  var expectedDaily = booked / dates.length;
+
+  // benchMark
+  var bm = benchData.find(function(row){
+    return row["Format"] === "hangTime";
+  });
+  bm = bm["Engagement Rate"] * 100;
+
+  // generate blank data
+  var data = [
+    ['Date', 'Engagements', 'Clicks', 'Expected']
+  ];
+  for(var i = 1; i < dates.length; i++){
+    var entry = [dates[i], 0, 0, bm];
+    data.push(entry);
+  }
+
+  data.forEach(function(row, index){
+    // first row of data is headers, so ignore this row
+    if(typeof row[0] === 'object'){
+      var dateMatch = chartData.find(function(entry){
+        // find and return chartData row where date matches
+        return entry["Date"].getTime() == row[0].getTime();
+      });
+
+      if(typeof dateMatch !== 'undefined'){
+        data[index][1] = dateMatch["Engagement Rate"] * 100;
+        data[index][2] = dateMatch["CTR"] * 100;
+      }
+    }
+  });
+
+  data = google.visualization.arrayToDataTable(data);
+
+  console.log(chartData);
+  var csv = google.visualization.dataTableToCsv(data);
+    console.log('table data', csv);
+
+  var chart = new google.visualization.LineChart(document.getElementById('chart--ENG_DATE'));
+  chart.draw(data,{
+    title: 'Engagement Rate',
+    curveType: 'function',
+    legend: { position: 'bottom' },
+    hAxis: {
+      format: 'd/MM',
+      viewWindow: {
+        min: startDate,
+        max: endDate
+      }
+    },
+    explorer: {
+      actions: ['dragToZoom', 'rightClickToReset']
+    }
   });
 }
